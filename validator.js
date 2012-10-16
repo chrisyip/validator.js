@@ -97,19 +97,9 @@
 
     // radio 根据当年 radio 的 name 属性获取元素，所有元素都被
     radio: function(){
-      // TODO: a better way?!
-      var form = this.$item.parents('form').eq(0)
-        , identifier = 'input:radio[name=' + this.$item.attr('name') + ']'
-        , result = false
+      radios || (radios = $(':radio[name=' + this.$item.attr('name') +']:checked', this.$item.closest('form')))
 
-      radios || (radios = $(identifier, form))
-
-      // TODO: a faster way?!
-      radios.each(function(i, item){
-        if(item.checked && !result) return result = true;
-      })
-
-      return result;
+      return 1 === radios.length;
     },
 
     // text[notEmpty] 表单项不为空
