@@ -6,7 +6,7 @@
  ~function ($) {
 
   var patterns, fields, addErrorClass, novalidate, validateForm, validateFields, radios
-    , checkboxs, removeFromUnvalidFields, asyncValidate
+    , removeFromUnvalidFields, asyncValidate
     , unvalidFields = []
 
   // 类型判断
@@ -108,14 +108,14 @@
     // text[notEmpty] 表单项不为空
     // [type=text] 也会进这项
     text: function(text){
-      var max = this.$item.attr('maxlength')
+      var max = parseInt(this.$item.attr('maxlength'), 10)
         , noEmpty
 
-       notEmpty = function(text){
+      notEmpty = function(text){
         return !!text.length && !/^\s+$/.test(text)
       }
-
-      return max ? notEmpty(text) && text.length <= max : notEmpty(text);
+      
+      return isNaN(max) ? notEmpty(text) : notEmpty(text) && text.length <= max;
     }
   }
 
@@ -126,7 +126,6 @@
       , method = data['method'] || 'get'
       , key = data['key'] || 'key'
       , params = {}
-      , validate
 
     params[key] = text;
 
@@ -137,8 +136,7 @@
         , message: 'unvaild'
       })
     }).error(function(){
-      // $form.trigger('validate.async.error');
-      // 异步错误，供调度用，理论上线上应该继续运行
+      // 异步错误，供调试用，理论上线上不应该继续运行
     });
   }
 
@@ -152,7 +150,6 @@
   validate = function($item, klass, parent){
     var pattern, message, type, async, $form
 
-    $form = $item.parents('form').eq(0);
     patterns.$item = $item;
     pattern = $item.attr('pattern');
     type = $item.attr('type') || 'text';
